@@ -22,3 +22,19 @@ class TaskService():
         new_task = TaskModel(**task.dict())
         self.db.add(new_task)
         self.db.commit()
+        return 
+    
+    def update_task(self, id: int, updated_task: Task):
+        old_task = self.get_task_by_id(id)
+        
+        if old_task.scalar():
+            data = updated_task.dict()
+            data['id'] = id
+            old_task.update(data)
+            self.db.commit()
+            return
+        
+    def delete_task(self, id):
+        self.db.query(TaskModel).filter(TaskModel.id == id).delete()
+        self.db.commit()
+        return

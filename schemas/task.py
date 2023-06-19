@@ -7,7 +7,7 @@ today = datetime.date.today()
 
 class Task(BaseModel):
     id: Optional[int] = None
-    title: str = Field(min_length=5, max_length=15)
+    title: str = Field(min_length=5, max_length=50)
     content: str = Field(max_length=500)
     year: int = Field(le=today.year) # <= current year
     category: str
