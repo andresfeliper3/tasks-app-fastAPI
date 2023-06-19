@@ -66,3 +66,10 @@ def delete_task(id: int) -> dict:
 
     result = TaskService(db).delete_task(id)
     return JSONResponse(content={"message": "Task has been deleted"}, status_code=200)
+
+
+@task_router.delete('/tasks-all', tags=['tasks'], response_model=dict)
+def delete_all_tasks() -> dict:
+    db = SessionLocal()
+    TaskService(db).delete_all_tasks()
+    return JSONResponse(content={"message": "All tasks deleted"}, status_code=200)
