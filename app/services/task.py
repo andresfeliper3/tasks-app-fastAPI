@@ -43,6 +43,6 @@ class TaskService():
         return
     
     def delete_all_tasks(self):
-        res = self.db.query(TaskModel).delete()
+        self.db.query(TaskModel).delete()
         self.db.commit()
         return 

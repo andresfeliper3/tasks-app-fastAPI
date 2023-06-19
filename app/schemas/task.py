@@ -1,8 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-
-import datetime
-today = datetime.date.today()
+from utils.time import today
 
 
 class Task(BaseModel):
