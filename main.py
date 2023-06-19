@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, JSONResponse
 
-from config import create_configuration_fastapi
+from utils.config import create_configuration_fastapi
 
 from db.database import  engine, Base
 
