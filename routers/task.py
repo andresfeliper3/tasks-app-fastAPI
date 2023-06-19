@@ -3,13 +3,13 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from typing import List
 
-from schemas import Task
+from schemas.task import Task
 
-from sql_app.database import SessionLocal
+from db.database import SessionLocal
 from models.task import Task as TaskModel
 
 from middlewares.jwt_bearer import JWTBearer
-
+from services.task import TaskService
 
 task_router = APIRouter()
 
@@ -17,13 +17,13 @@ task_router = APIRouter()
          response_model=List[Task], status_code=200)#, dependencies=[Depends(JWTBearer())])
 def get_tasks() -> List[Task]:
     db = SessionLocal()
-    results = db.query(TaskModel).all()
+    results = TaskService(db).get_tasks()
     return JSONResponse(content=jsonable_encoder(results), status_code=200)
 
 @task_router.get('/tasks/{id}', tags=['tasks'], response_model = Task)
 def get_task_by_id(id: int = Path(ge=1)) -> Task:
     db = SessionLocal()
-    result = db.query(TaskModel).filter(TaskModel.id == id).first()
+    result = TaskService(db).get_task_by_id(id)
     if not result:
         return JSONResponse(content={"message": "Not found"}, status_code=400)
     return JSONResponse(content=jsonable_encoder(result), status_code=200)
@@ -32,7 +32,7 @@ def get_task_by_id(id: int = Path(ge=1)) -> Task:
 @task_router.get('/tasks/', tags=['tasks'], response_model = List[Task])
 def get_tasks_by_category(category: str = Query(min_length=3)) -> List[Task]:
     db = SessionLocal()
-    result = db.query(TaskModel).filter(TaskModel.category == category).all()
+    result = TaskService(db).get_tasks_by_category(category)
     if not result:
         return JSONResponse(content={"message": "Not found"}, status_code=404)
     return JSONResponse(content=jsonable_encoder(result), status_code=200)
@@ -40,9 +40,7 @@ def get_tasks_by_category(category: str = Query(min_length=3)) -> List[Task]:
 @task_router.post('/tasks', tags=['tasks'], response_model=dict)
 def add_task(task: Task) -> dict:
     db = SessionLocal()
-    new_task = TaskModel(**task.dict())
-    db.add(new_task)
-    db.commit()
+    TaskService(db).add_task(task)
     return JSONResponse(content={"message": "Task registered"}, status_code=201)
     
     

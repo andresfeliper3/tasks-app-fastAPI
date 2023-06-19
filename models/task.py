@@ -1,4 +1,4 @@
-from sql_app.database import Base
+from db.database import Base
 from sqlalchemy import Column, Integer, String
 
 class Task(Base):
