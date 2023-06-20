@@ -1,2 +1,2 @@
 import datetime
-today = datetime.date.today()
+today_year = datetime.date.today().year

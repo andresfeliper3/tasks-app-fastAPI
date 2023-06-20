@@ -1,10 +1,10 @@
 from pydantic import BaseModel, EmailStr, Field, validator
-from utils.time import today
+from utils.time import today_year
 
 class User(BaseModel):
     firstname: str
     lastname: str   
-    year_of_birth: int = Field(le=today.year)  # <= current year
+    year_of_birth: int = Field(le=today_year)  # <= current year
     email: EmailStr
     password: str 
     

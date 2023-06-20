@@ -3,7 +3,7 @@ from typing import Optional
 
 class Category(BaseModel):
     id: Optional[int] = None
-    title: str = Field(max_length=100)
+    name: str = Field(max_length=100)
     description: str
     
     
@@ -11,7 +11,7 @@ class Category(BaseModel):
         schema_extra = {
             "example": {
                 "id": 1,
-                "title": "My category",
+                "name": "My category",
                 "description":"This is a description..."
             }
         }
