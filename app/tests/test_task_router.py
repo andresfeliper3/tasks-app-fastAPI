@@ -12,7 +12,7 @@ client = TestClient(app)
 class TestTaskRouter(unittest.TestCase):
 
     def setUp(self):
-        # Insertar un registro de tarea de ejemplo antes de cada prueba
+        # Insert an example category record before each test
         task_data = {
             "title": "Example task",
             "year": 2022,
@@ -21,28 +21,27 @@ class TestTaskRouter(unittest.TestCase):
         }
         response = client.post("/task", json=task_data)
         self.assertEqual(response.status_code, 201)
-        self.task_id = response.json()["id"]  # Obtener el ID del registro insertado
+        self.task_id = response.json()["id"] # Get the ID of the inserted record
 
     def tearDown(self):
-        # Eliminar el registro de tarea después de cada prueba
+        # Delete the category record after each test
         response = client.delete(f"/task/{self.task_id}")
         self.assertEqual(response.status_code, 200)
 
     def test_get_tasks(self):
         response = client.get("/task")
         self.assertEqual(response.status_code, 200)
-        # Aquí puedes verificar si el contenido de la respuesta es el esperado
+ 
 
     def test_get_task_by_id(self):
         response = client.get(f"/task/{self.task_id}")
         self.assertEqual(response.status_code, 200)
-        # Aquí puedes verificar si el contenido de la respuesta es el esperado
+     
 
     def test_get_tasks_by_category(self):
         response = client.get("/task/?category=Default")
         self.assertEqual(response.status_code, 200)
-        # Aquí puedes verificar si el contenido de la respuesta es el esperado
-
+      
     def test_add_task(self):
         task_data = {
             "title": "My task testing",
@@ -52,8 +51,7 @@ class TestTaskRouter(unittest.TestCase):
         }
         response = client.post("/task", json=task_data)
         self.assertEqual(response.status_code, 201)
-        # Aquí puedes verificar si el contenido de la respuesta es el esperado
-
+        
     def test_update_task(self):
         task_data = {
             "category_id": 1,
@@ -63,8 +61,7 @@ class TestTaskRouter(unittest.TestCase):
         }
         response = client.put(f"/task/{self.task_id}", json=task_data)
         self.assertEqual(response.status_code, 200)
-        # Aquí puedes verificar si el contenido de la respuesta es el esperado
-
+      
     def test_add_task_no_title(self):
         task_data = {
             "year": 2023,
