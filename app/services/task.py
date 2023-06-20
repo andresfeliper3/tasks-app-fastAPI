@@ -1,4 +1,4 @@
-from models.task import Task as TaskModel
+from models.model import Task as TaskModel
 from schemas.task import Task
 
 

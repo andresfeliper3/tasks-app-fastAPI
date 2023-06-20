@@ -1,4 +1,4 @@
-from models.task import Category as CategoryModel
+from models.model import Category as CategoryModel
 from schemas.category import Category
 
 

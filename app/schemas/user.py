@@ -1,7 +1,13 @@
 from pydantic import BaseModel, EmailStr, Field, validator
 from utils.time import today_year
 
-class User(BaseModel):
+
+class LoginUser(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class RegisterUser(BaseModel):
     firstname: str
     lastname: str   
     year_of_birth: int = Field(le=today_year)  # <= current year
@@ -10,7 +16,7 @@ class User(BaseModel):
     
     @validator('password')
     def validate_password(cls, password):
-        # Aplica las restricciones a la contraseña
+        # Apply password restrictions
         if len(password) < 8:
             raise ValueError('Password must be at least 8 characters long')
         if password.isalpha():
