@@ -16,6 +16,7 @@ task_router = APIRouter(prefix='/task', tags=['tasks'])
 # Define the time limit for data stored in Redis (in seconds)
 REDIS_TIME_LIMIT = 3600  # Set to 1 hour
 
+
 @task_router.get('/', response_model=List[Task], status_code=200)
 def get_tasks(db=Depends(get_db)) -> List[Task]:
     results = TaskService(db).get_tasks()
@@ -32,12 +33,13 @@ def get_task_by_id(id: int = Path(ge=1), db=Depends(get_db)) -> Task:
     else:
         result = TaskService(db).get_task_by_id(id)
         if not result:
-            return JSONResponse(content={"message": "Not found"}, status_code=400)
+            return JSONResponse(
+                content={"message": "Not found"}, status_code=400)
         redis_conn.set(task_key, json.dumps(jsonable_encoder(result)))
-        redis_conn.expire(task_key, REDIS_TIME_LIMIT)  # Set the time limit for the task key
+        # Set the time limit for the task key
+        redis_conn.expire(task_key, REDIS_TIME_LIMIT)
 
     return JSONResponse(content=jsonable_encoder(result), status_code=200)
-
 
 
 @task_router.get('/category/{category_id}', response_model=List[Task])
@@ -55,9 +57,10 @@ def add_task(task: Task, db=Depends(get_db)) -> dict:
     result_json = jsonable_encoder(result)
     task_key = f'task:{result_json["id"]}'
     redis_conn.set(task_key, json.dumps(jsonable_encoder(result)))
-    redis_conn.expire(task_key, REDIS_TIME_LIMIT)  # Set the time limit for the task key
+    # Set the time limit for the task key
+    redis_conn.expire(task_key, REDIS_TIME_LIMIT)
     redis_conn.delete('tasks')  # Delete the "tasks" key to update the data
-    
+
     return JSONResponse(content=jsonable_encoder(result), status_code=201)
 
 
@@ -66,11 +69,12 @@ def update_task(id: int, updated_task: Task, db=Depends(get_db)) -> dict:
     result = TaskService(db).get_task_by_id(id)
     if not result:
         return JSONResponse(content={"message": "Not found"}, status_code=404)
-    
+
     TaskService(db).update_task(id, updated_task)
     task_key = f'task:{id}'
-    redis_conn.delete(task_key)  # Delete the key of the updated object in Redis
-    
+    # Delete the key of the updated object in Redis
+    redis_conn.delete(task_key)
+
     return JSONResponse(content={"message": "Task updated"}, status_code=200)
 
 
@@ -78,18 +82,22 @@ def update_task(id: int, updated_task: Task, db=Depends(get_db)) -> dict:
 def delete_task(id: int, db=Depends(get_db)) -> dict:
     result = TaskService(db).get_task_by_id(id)
     if not result:
-        return JSONResponse(content={"message": "Task not found"}, status_code=404)
-    
+        return JSONResponse(
+            content={"message": "Task not found"}, status_code=404)
+
     result = TaskService(db).delete_task(id)
     task_key = f'task:{id}'
-    redis_conn.delete(task_key)  # Delete the key of the deleted object in Redis
-    
-    return JSONResponse(content={"message": "Task has been deleted"}, status_code=200)
+    # Delete the key of the deleted object in Redis
+    redis_conn.delete(task_key)
+
+    return JSONResponse(
+        content={"message": "Task has been deleted"}, status_code=200)
 
 
 @task_router.delete('/all', response_model=dict)
 def delete_all_tasks(db=Depends(get_db)) -> dict:
     TaskService(db).delete_all_tasks()
     redis_conn.delete('tasks')  # Delete the "tasks" key in Redis
-    
-    return JSONResponse(content={"message": "All tasks deleted"}, status_code=200)
+
+    return JSONResponse(
+        content={"message": "All tasks deleted"}, status_code=200)
