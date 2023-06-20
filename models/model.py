@@ -1,6 +1,6 @@
 from db.database import Base
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 
 class Category(Base):
@@ -10,7 +10,7 @@ class Category(Base):
     name = Column(String)
     description = Column(String)
 
-    tasks = relationship("Task", back_populates="category")
+    tasks = relationship("Task", back_populates="category", cascade="all, delete-orphan")
 
 
 class User(Base):
@@ -26,11 +26,15 @@ class User(Base):
     created_tasks = relationship(
         "Task",
         back_populates="creator",
-        foreign_keys='Task.creator_id')
+        foreign_keys='Task.creator_id',
+        cascade="all, delete-orphan"
+    )
     tasks_in_charge = relationship(
         "Task",
         back_populates="in_charge",
-        foreign_keys='Task.in_charge_id')
+        foreign_keys='Task.in_charge_id',
+        cascade="all, delete-orphan"
+    )
 
 
 class Task(Base):
@@ -48,8 +52,12 @@ class Task(Base):
     creator = relationship(
         "User",
         back_populates="created_tasks",
-        foreign_keys=[creator_id])
+        foreign_keys=[creator_id],
+        cascade="all, delete"
+    )
     in_charge = relationship(
         "User",
         back_populates="tasks_in_charge",
-        foreign_keys=[in_charge_id])
+        foreign_keys=[in_charge_id],
+        cascade="all, delete"
+    )

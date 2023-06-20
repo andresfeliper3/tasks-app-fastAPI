@@ -5,6 +5,7 @@ from typing import List
 import json
 
 from db.database import get_db, redis_conn
+from middlewares.jwt_bearer import JWTBearer
 from schemas.category import Category
 from services.category import CategoryService
 
@@ -92,7 +93,7 @@ def delete_category(category_id: int, db=Depends(get_db)) -> Category:
         deleted_category), status_code=200)
 
 
-@category_router.delete('/', response_model=int)
+@category_router.delete('/', response_model=int, dependencies=[Depends(JWTBearer())])
 def delete_all_categories(db=Depends(get_db)) -> int:
     deleted_count = CategoryService(db).delete_all_categories()
     redis_conn.delete('categories')  # Delete the "categories" key in Redis

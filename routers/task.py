@@ -94,7 +94,7 @@ def delete_task(id: int, db=Depends(get_db)) -> dict:
         content={"message": "Task has been deleted"}, status_code=200)
 
 
-@task_router.delete('/all', response_model=dict)
+@task_router.delete('/all', response_model=dict, dependencies=[Depends(JWTBearer())])
 def delete_all_tasks(db=Depends(get_db)) -> dict:
     TaskService(db).delete_all_tasks()
     redis_conn.delete('tasks')  # Delete the "tasks" key in Redis
