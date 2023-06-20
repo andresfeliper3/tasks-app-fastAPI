@@ -1,8 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm.session import sessionmaker
 from sqlalchemy.orm import declarative_base
+from utils.myenv import ENV
 import redis
-from env import ENV
+
+
 
 SQLALCHEMY_DATABASE_URL = ENV['SQLALCHEMY_DATABASE_URL']
 REDIS_HOST = ENV['REDIS_HOST']
@@ -15,7 +17,8 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
 
-redis_conn = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD, ssl=True)
+redis_conn = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD, decode_responses=True)
+
 
 def get_db():
     db = SessionLocal()

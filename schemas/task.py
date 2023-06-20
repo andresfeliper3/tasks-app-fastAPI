@@ -9,14 +9,17 @@ class Task(BaseModel):
     content: str = Field(max_length=500)
     year: int = Field(le=today_year)  # <= current year
     category_id: int
+    creator_id: int
+    in_charge_id: int
 
     class Config:
         schema_extra = {
             "example": {
-                "id": 1,
                 "title": "My task",
                 "content": "Content...",
                 "year": today_year,
-                "category_id": 1
+                "category_id": 1,
+                "creator_id": 1,
+                "in_charge_id": 1
             }
         }

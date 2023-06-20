@@ -17,7 +17,7 @@ class TaskService():
 
     def get_tasks_by_category(self, category):
         result = self.db.query(TaskModel).filter(
-            TaskModel.category == category).all()
+            TaskModel.category_id == category).all()
         return result
 
     def add_task(self, task: Task):
