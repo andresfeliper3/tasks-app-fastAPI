@@ -19,6 +19,7 @@ REDIS_TIME_LIMIT = 3600  # Set to 1 hour
 
 @task_router.get('/', response_model=List[Task], status_code=200)
 def get_tasks(db=Depends(get_db)) -> List[Task]:
+    # Retrieve all tasks from the TaskService
     results = TaskService(db).get_tasks()
     return JSONResponse(content=jsonable_encoder(results), status_code=200)
 
@@ -44,6 +45,7 @@ def get_task_by_id(id: int = Path(ge=1), db=Depends(get_db)) -> Task:
 
 @task_router.get('/category/{category_id}', response_model=List[Task])
 def get_tasks_by_category(category_id: int, db=Depends(get_db)) -> List[Task]:
+    # Retrieve tasks by category from the TaskService
     result = TaskService(db).get_tasks_by_category(category_id)
     if not result:
         return JSONResponse(content={"message": "Not found"}, status_code=404)
@@ -66,6 +68,7 @@ def add_task(task: Task, db=Depends(get_db)) -> dict:
 
 @task_router.put('/{id}', response_model=dict)
 def update_task(id: int, updated_task: Task, db=Depends(get_db)) -> dict:
+    # Update an existing task using the TaskService
     result = TaskService(db).get_task_by_id(id)
     if not result:
         return JSONResponse(content={"message": "Not found"}, status_code=404)
@@ -80,6 +83,7 @@ def update_task(id: int, updated_task: Task, db=Depends(get_db)) -> dict:
 
 @task_router.delete('/{id}', response_model=dict)
 def delete_task(id: int, db=Depends(get_db)) -> dict:
+    # Delete a task by its ID using the TaskService
     result = TaskService(db).get_task_by_id(id)
     if not result:
         return JSONResponse(
@@ -96,6 +100,7 @@ def delete_task(id: int, db=Depends(get_db)) -> dict:
 
 @task_router.delete('/all', response_model=dict, dependencies=[Depends(JWTBearer())])
 def delete_all_tasks(db=Depends(get_db)) -> dict:
+    # Delete all tasks using the TaskService
     TaskService(db).delete_all_tasks()
     redis_conn.delete('tasks')  # Delete the "tasks" key in Redis
 

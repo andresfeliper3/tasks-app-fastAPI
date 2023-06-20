@@ -9,6 +9,8 @@ class ErrorHandler(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next) -> Response | JSONResponse:
         try:
+            # Call the next middleware or route handler
             return await call_next(request)
         except Exception as e:
+            # If an exception occurs, handle it and return a JSON response with the error message
             return JSONResponse(content={"error": str(e)}, status_code=500)

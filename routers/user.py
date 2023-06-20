@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 from db.database import get_db
 from models.model import User as UserModel
 
-
 user_router = APIRouter()
 
 
@@ -17,23 +16,20 @@ def login(user: LoginUser, db: Session = Depends(get_db)):
     db_user = db.query(UserModel).filter(UserModel.email == user.email).first()
 
     if db_user:
-        # Verify the password against the hashed password stored in the
-        # database
-        if bcrypt.checkpw(user.password.encode('utf-8'),
-                          db_user.password.encode('utf-8')):
+        # Verify the password against the hashed password stored in the database
+        if bcrypt.checkpw(user.password.encode('utf-8'), db_user.password.encode('utf-8')):
+            # Create a JWT token using the user's information
             token: str = create_token(user.dict())
             return JSONResponse(content=token, status_code=200)
 
-    return JSONResponse(
-        content={"message": "Wrong credentials"}, status_code=401)
+    # Return an error response if the credentials are invalid
+    return JSONResponse(content={"message": "Wrong credentials"}, status_code=401)
 
 
 @user_router.post('/register', tags=['auth'])
 def register(user: RegisterUser, db: Session = Depends(get_db)):
-    # Encrypt the password
-    hashed_password = bcrypt.hashpw(
-        user.password.encode('utf-8'),
-        bcrypt.gensalt())
+    # Encrypt the password using bcrypt
+    hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
 
     # Create a new user with the encrypted password
     new_user = UserModel(
@@ -50,5 +46,4 @@ def register(user: RegisterUser, db: Session = Depends(get_db)):
     db.commit()
 
     # Return a success response
-    return JSONResponse(
-        content={"message": "User registered successfully"}, status_code=201)
+    return JSONResponse(content={"message": "User registered successfully"}, status_code=201)
