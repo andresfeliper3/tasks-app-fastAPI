@@ -2,6 +2,7 @@ from routers.task import task_router
 from routers.user import user_router
 from routers.category import category_router
 
+
 def create_configuration_fastapi(app, middleware):
     # Changes to the docs
     app.title = "My app with FastAPI"

@@ -19,7 +19,8 @@ class TestCategoryRouter(unittest.TestCase):
         }
         response = client.post("/category", json=category_data)
         self.assertEqual(response.status_code, 201)
-        self.category_id = response.json()["id"]  # Get the ID of the inserted record
+        # Get the ID of the inserted record
+        self.category_id = response.json()["id"]
 
     def tearDown(self):
         # Delete the category record after each test
@@ -29,12 +30,10 @@ class TestCategoryRouter(unittest.TestCase):
     def test_get_categories(self):
         response = client.get("/category")
         self.assertEqual(response.status_code, 200)
-    
 
     def test_get_category_by_id(self):
         response = client.get(f"/category/{self.category_id}")
         self.assertEqual(response.status_code, 200)
-       
 
     def test_add_category(self):
         category_data = {
@@ -43,15 +42,16 @@ class TestCategoryRouter(unittest.TestCase):
         }
         response = client.post("/category", json=category_data)
         self.assertEqual(response.status_code, 201)
-       
+
     def test_update_category(self):
         category_data = {
             "name": "Updated category",
             "description": "Updated description"
         }
-        response = client.put(f"/category/{self.category_id}", json=category_data)
+        response = client.put(
+            f"/category/{self.category_id}",
+            json=category_data)
         self.assertEqual(response.status_code, 200)
-       
 
     def test_add_category_no_name(self):
         category_data = {
@@ -59,8 +59,6 @@ class TestCategoryRouter(unittest.TestCase):
         }
         response = client.post("/category", json=category_data)
         self.assertEqual(response.status_code, 422)
-
-   
 
 
 if __name__ == "__main__":

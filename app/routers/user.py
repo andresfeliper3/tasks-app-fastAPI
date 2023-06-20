@@ -17,19 +17,23 @@ def login(user: LoginUser, db: Session = Depends(get_db)):
     db_user = db.query(UserModel).filter(UserModel.email == user.email).first()
 
     if db_user:
-        # Verify the password against the hashed password stored in the database
-        if bcrypt.checkpw(user.password.encode('utf-8'), db_user.password.encode('utf-8')):
+        # Verify the password against the hashed password stored in the
+        # database
+        if bcrypt.checkpw(user.password.encode('utf-8'),
+                          db_user.password.encode('utf-8')):
             token: str = create_token(user.dict())
             return JSONResponse(content=token, status_code=200)
 
-    return JSONResponse(content={"message": "Wrong credentials"}, status_code=401)
-
+    return JSONResponse(
+        content={"message": "Wrong credentials"}, status_code=401)
 
 
 @user_router.post('/register', tags=['auth'])
 def register(user: RegisterUser, db: Session = Depends(get_db)):
     # Encrypt the password
-    hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
+    hashed_password = bcrypt.hashpw(
+        user.password.encode('utf-8'),
+        bcrypt.gensalt())
 
     # Create a new user with the encrypted password
     new_user = UserModel(
@@ -37,7 +41,8 @@ def register(user: RegisterUser, db: Session = Depends(get_db)):
         lastname=user.lastname,
         year_of_birth=user.year_of_birth,
         email=user.email,
-        password=hashed_password.decode('utf-8')  # Store the hashed password as a string
+        # Store the hashed password as a string
+        password=hashed_password.decode('utf-8')
     )
 
     # Save the new user to the database
@@ -45,5 +50,5 @@ def register(user: RegisterUser, db: Session = Depends(get_db)):
     db.commit()
 
     # Return a success response
-    return JSONResponse(content={"message": "User registered successfully"}, status_code=201)
-
+    return JSONResponse(
+        content={"message": "User registered successfully"}, status_code=201)

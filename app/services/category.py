@@ -12,11 +12,13 @@ class CategoryService:
         return result
 
     def get_category_by_id(self, id):
-        result = self.db.query(CategoryModel).filter(CategoryModel.id == id).first()
+        result = self.db.query(CategoryModel).filter(
+            CategoryModel.id == id).first()
         return result
 
     def get_category_by_title(self, title):
-        result = self.db.query(CategoryModel).filter(CategoryModel.title == title).first()
+        result = self.db.query(CategoryModel).filter(
+            CategoryModel.title == title).first()
         return result
 
     def create_category(self, category: Category):
@@ -27,7 +29,8 @@ class CategoryService:
         return new_category
 
     def update_category(self, id: int, updated_category: Category):
-        old_category = self.db.query(CategoryModel).filter(CategoryModel.id == id).first()
+        old_category = self.db.query(CategoryModel).filter(
+            CategoryModel.id == id).first()
         if old_category:
             data = updated_category.dict()
             data['id'] = id
@@ -37,7 +40,8 @@ class CategoryService:
             return old_category
 
     def delete_category(self, id):
-        deleted_category = self.db.query(CategoryModel).filter(CategoryModel.id == id).first()
+        deleted_category = self.db.query(CategoryModel).filter(
+            CategoryModel.id == id).first()
         if deleted_category:
             self.db.delete(deleted_category)
             self.db.commit()

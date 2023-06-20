@@ -24,11 +24,12 @@ class TaskService():
         new_task = TaskModel(**task.dict())
         self.db.add(new_task)
         self.db.commit()
-        self.db.refresh(new_task)  # Actualizar el objeto cargado desde la base de datos
-        return new_task 
+        # Actualizar el objeto cargado desde la base de datos
+        self.db.refresh(new_task)
+        return new_task
 
     def update_task(self, id: int, updated_task: Task):
-        old_task =  self.db.query(TaskModel).filter(TaskModel.id == id)
+        old_task = self.db.query(TaskModel).filter(TaskModel.id == id)
 
         if old_task.scalar():
             data = updated_task.dict()
@@ -41,8 +42,8 @@ class TaskService():
         self.db.query(TaskModel).filter(TaskModel.id == id).delete()
         self.db.commit()
         return
-    
+
     def delete_all_tasks(self):
         self.db.query(TaskModel).delete()
         self.db.commit()
-        return 
+        return

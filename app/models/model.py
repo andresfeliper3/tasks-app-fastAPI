@@ -23,8 +23,14 @@ class User(Base):
     email = Column(String)
     password = Column(String)
 
-    created_tasks = relationship("Task", back_populates="creator", foreign_keys='Task.creator_id')
-    tasks_in_charge = relationship("Task", back_populates="in_charge", foreign_keys='Task.in_charge_id')
+    created_tasks = relationship(
+        "Task",
+        back_populates="creator",
+        foreign_keys='Task.creator_id')
+    tasks_in_charge = relationship(
+        "Task",
+        back_populates="in_charge",
+        foreign_keys='Task.in_charge_id')
 
 
 class Task(Base):
@@ -39,5 +45,11 @@ class Task(Base):
     in_charge_id = Column(Integer, ForeignKey("users.id"))
 
     category = relationship("Category", back_populates="tasks")
-    creator = relationship("User", back_populates="created_tasks", foreign_keys=[creator_id])
-    in_charge = relationship("User", back_populates="tasks_in_charge", foreign_keys=[in_charge_id])
+    creator = relationship(
+        "User",
+        back_populates="created_tasks",
+        foreign_keys=[creator_id])
+    in_charge = relationship(
+        "User",
+        back_populates="tasks_in_charge",
+        foreign_keys=[in_charge_id])

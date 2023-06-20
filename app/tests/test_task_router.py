@@ -4,7 +4,8 @@ from fastapi.testclient import TestClient
 from routers.task import task_router  # Importa el enrutador task_router
 
 app = FastAPI()
-app.include_router(task_router)  # Incluye el enrutador task_router en la aplicación
+# Incluye el enrutador task_router en la aplicación
+app.include_router(task_router)
 
 client = TestClient(app)
 
@@ -21,7 +22,8 @@ class TestTaskRouter(unittest.TestCase):
         }
         response = client.post("/task", json=task_data)
         self.assertEqual(response.status_code, 201)
-        self.task_id = response.json()["id"] # Get the ID of the inserted record
+        # Get the ID of the inserted record
+        self.task_id = response.json()["id"]
 
     def tearDown(self):
         # Delete the category record after each test
@@ -31,17 +33,15 @@ class TestTaskRouter(unittest.TestCase):
     def test_get_tasks(self):
         response = client.get("/task")
         self.assertEqual(response.status_code, 200)
- 
 
     def test_get_task_by_id(self):
         response = client.get(f"/task/{self.task_id}")
         self.assertEqual(response.status_code, 200)
-     
 
     def test_get_tasks_by_category(self):
         response = client.get("/task/?category=Default")
         self.assertEqual(response.status_code, 200)
-      
+
     def test_add_task(self):
         task_data = {
             "title": "My task testing",
@@ -51,7 +51,7 @@ class TestTaskRouter(unittest.TestCase):
         }
         response = client.post("/task", json=task_data)
         self.assertEqual(response.status_code, 201)
-        
+
     def test_update_task(self):
         task_data = {
             "category_id": 1,
@@ -61,7 +61,7 @@ class TestTaskRouter(unittest.TestCase):
         }
         response = client.put(f"/task/{self.task_id}", json=task_data)
         self.assertEqual(response.status_code, 200)
-      
+
     def test_add_task_no_title(self):
         task_data = {
             "year": 2023,

@@ -17,6 +17,6 @@ class Task(BaseModel):
                 "title": "My task",
                 "content": "Content...",
                 "year": today_year,
-                "category_id": 1    
+                "category_id": 1
             }
         }
